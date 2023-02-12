@@ -12,11 +12,6 @@ const {
     splitText
 } = require("./src/util");
 const {
-    saveEnabled,
-    pollLiveTweeters,
-    getListRecord
-} = require("./src/live-tweeters");
-const {
     tweet,
     reply,
     getTweet,
@@ -258,7 +253,6 @@ async function handleDMEvent(twtr, oauth, msg) {
 
             let reply = [];
             if (text.toUpperCase() === "PAUSE") {
-                saveEnabled(msg.message_create.sender_id, false);
                 reply.push("Pausing boost of tweets without alt text");
                 tweet(
                     twtr,
@@ -266,7 +260,6 @@ async function handleDMEvent(twtr, oauth, msg) {
                     (name, username) => `${name} (@${username}) is signing off.`
                 );
             } else if (text.toUpperCase() === "START") {
-                saveEnabled(msg.message_create.sender_id, true);
                 reply.push("Beginning boost of tweets without alt text");
                 tweet(
                     twtr,
@@ -702,9 +695,6 @@ async function startMonitor(twtr, oauth) {
 
 async function run() {
     const twtr = new twitter.TwitterClient(config.twitterClientConfig);
-    let list = getListRecord(config.list);
-    console.log("Found list:");
-    console.log(list);
 
     const oauth = OAuth({
         consumer: {
@@ -724,7 +714,6 @@ async function run() {
         .catch(err => {
             console.log(err);
         });
-    setInterval(pollLiveTweeters(twtr, list), 3000);
 }
 
 run();
