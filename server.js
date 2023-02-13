@@ -584,7 +584,7 @@ async function handleMention(twtr, oauth, tweet) {
         );
     }
 
-    if (!text.match(/@AltTextUtil/i)) {
+    if (!text.match(/@AltTextOcr/i)) {
         console.log(
             `${ts()}: Got mention, but it didn't actually contain my name: '${text}'`
         );
@@ -594,7 +594,7 @@ async function handleMention(twtr, oauth, tweet) {
     const {
         targetTweet,
         tweetTargetStr
-    } = await getTargetTweet(twtr, tweet, text.match(/(ocr)|(extract text)|(save)|(search)|(fetch)|(^(\s*@\w+)*\s*@AltTextUtil\s*$)/i))
+    } = await getTargetTweet(twtr, tweet, text.match(/(ocr)|(extract text)|(save)|(search)|(fetch)|(^(\s*@\w+)*\s*@AltTextOcr\s*$)/i))
 
     if (tweetTargetStr === "no-images-found") {
         await reply(
@@ -617,7 +617,7 @@ async function handleMention(twtr, oauth, tweet) {
     }
 
     let cmdReply = [];
-    if (text.match(/(ocr)|(extract text)/i) || text.match(/^(\s*@\w+)*\s*@AltTextUtil\s*$/i)) {
+    if (text.match(/(ocr)|(extract text)/i) || text.match(/^(\s*@\w+)*\s*@AltTextOcr\s*$/i)) {
         await handleOcrMention(twtr, tweet, targetTweet, cmdReply)
     } else if (text.match(/analyze link(s?)/i)) {
         let urls = getUrls(targetTweet);
