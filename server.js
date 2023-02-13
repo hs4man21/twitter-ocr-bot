@@ -240,57 +240,57 @@ ocr or extract text <images or tweets>: Attempts to extract text from an image o
 check <tweets or users>: Checks a tweet for alt text on images, or produces a report on a user's alt text usage.
 help: Print this help message.`;
 
-async function handleDMEvent(twtr, oauth, msg) {
-    if (msg.type && msg.type === "message_create") {
-        if (
-            msg.message_create &&
-            msg.message_create.sender_id !== config.myUser &&
-            msg.message_create.message_data &&
-            msg.message_create.message_data.text
-        ) {
-            let text = msg.message_create.message_data.text.trim();
-            console.log(`Found DM text: '${text}'`);
+// async function handleDMEvent(twtr, oauth, msg) {
+//     if (msg.type && msg.type === "message_create") {
+//         if (
+//             msg.message_create &&
+//             msg.message_create.sender_id !== config.myUser &&
+//             msg.message_create.message_data &&
+//             msg.message_create.message_data.text
+//         ) {
+//             let text = msg.message_create.message_data.text.trim();
+//             console.log(`Found DM text: '${text}'`);
 
-            let reply = [];
-            if (text.toUpperCase() === "PAUSE") {
-                reply.push("Pausing boost of tweets without alt text");
-                tweet(
-                    twtr,
-                    msg.message_create.sender_id,
-                    (name, username) => `${name} (@${username}) is signing off.`
-                );
-            } else if (text.toUpperCase() === "START") {
-                reply.push("Beginning boost of tweets without alt text");
-                tweet(
-                    twtr,
-                    msg.message_create.sender_id,
-                    (name, username) =>
-                        `${name} (@${username}) is going live. Please reply to this tweet if you're able to assist them with descriptions.`
-                );
-            } else if (text.match(/^(ocr)|(extract text)/i)) {
-                let ocrReply = await ocrDMCmd(twtr, oauth, msg, text);
-                reply.push(...ocrReply);
-            } else if (text.match(/^check/i)) {
-                let checkReply = await checkDMCmd(twtr, text);
-                reply.push(...checkReply);
-            } else if (text.match(/^(fetch)|(search)/i)) {
-                let fetched = await fetchDMCmd(twtr, oauth, msg, text);
-                reply.push(...fetched);
-            } else if (text.match(/^help/i)) {
-                reply.push(help);
-            } else {
-                console.log("Got non-understood DM: '" + text + "'");
-                reply.push(
-                    "Unknown command. Try 'help' for a full list of commands. DM @HBeckPDX with questions."
-                );
-            }
+//             let reply = [];
+//             if (text.toUpperCase() === "PAUSE") {
+//                 reply.push("Pausing boost of tweets without alt text");
+//                 tweet(
+//                     twtr,
+//                     msg.message_create.sender_id,
+//                     (name, username) => `${name} (@${username}) is signing off.`
+//                 );
+//             } else if (text.toUpperCase() === "START") {
+//                 reply.push("Beginning boost of tweets without alt text");
+//                 tweet(
+//                     twtr,
+//                     msg.message_create.sender_id,
+//                     (name, username) =>
+//                         `${name} (@${username}) is going live. Please reply to this tweet if you're able to assist them with descriptions.`
+//                 );
+//             } else if (text.match(/^(ocr)|(extract text)/i)) {
+//                 let ocrReply = await ocrDMCmd(twtr, oauth, msg, text);
+//                 reply.push(...ocrReply);
+//             } else if (text.match(/^check/i)) {
+//                 let checkReply = await checkDMCmd(twtr, text);
+//                 reply.push(...checkReply);
+//             } else if (text.match(/^(fetch)|(search)/i)) {
+//                 let fetched = await fetchDMCmd(twtr, oauth, msg, text);
+//                 reply.push(...fetched);
+//             } else if (text.match(/^help/i)) {
+//                 reply.push(help);
+//             } else {
+//                 console.log("Got non-understood DM: '" + text + "'");
+//                 reply.push(
+//                     "Unknown command. Try 'help' for a full list of commands. DM @HBeckPDX with questions."
+//                 );
+//             }
 
-            await Promise.all(
-                reply.map(dm => sendDM(twtr, msg.message_create.sender_id, dm))
-            );
-        }
-    }
-}
+//             await Promise.all(
+//                 reply.map(dm => sendDM(twtr, msg.message_create.sender_id, dm))
+//             );
+//         }
+//     }
+// }
 
 async function handleOcrMention(twtr, tweet, targetTweet, cmdReply) {
     let ocrs = await ocrTweetImages(twtr, targetTweet);
@@ -665,13 +665,13 @@ async function handleMention(twtr, oauth, tweet) {
 function handleEvent(twtr, oauth) {
     return async event => {
         if (event.direct_message_events && event.direct_message_events.forEach) {
-            // console.log(`Got webhook event: ${JSON.stringify(event)}`);
-            event.direct_message_events.forEach(msg =>
-                handleDMEvent(twtr, oauth, msg).catch(err => {
-                    console.log(`${ts()}: Uncaught error in DM handler`)
-                    console.log(err)
-                })
-            );
+            // // console.log(`Got webhook event: ${JSON.stringify(event)}`);
+            // event.direct_message_events.forEach(msg =>
+            //     handleDMEvent(twtr, oauth, msg).catch(err => {
+            //         console.log(`${ts()}: Uncaught error in DM handler`)
+            //         console.log(err)
+            //     })
+            // );
         } else if (event.tweet_create_events && event.tweet_create_events.forEach) {
             // console.log(`Got webhook event: ${JSON.stringify(event)}`);
             event.tweet_create_events.forEach(tweet =>
